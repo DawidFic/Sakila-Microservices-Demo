@@ -15,7 +15,7 @@ public class Language {
     @Column(name = "name")
     String languageName;
 
-    //CONSTRUCTORS//
+    //CONSTRUCTORS////
     public Language(String languageName) {
         this.languageName = languageName;
     }
