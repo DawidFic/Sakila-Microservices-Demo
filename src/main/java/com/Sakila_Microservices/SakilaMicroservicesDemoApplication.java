@@ -8,6 +8,8 @@ public class SakilaMicroservicesDemoApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SakilaMicroservicesDemoApplication.class, args);
+
+		System.out.println("Hello World!");
 	}
 
 }
