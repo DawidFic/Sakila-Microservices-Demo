@@ -3,7 +3,13 @@ package com.Sakila_Microservices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.ResourceAccessException;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @SpringBootApplication
 @RestController
@@ -38,6 +44,32 @@ public class SakilaMicroservicesDemoApplication {
 	@GetMapping("/allActors")
 	public @ResponseBody
 	Iterable<Actor> getAllActors() {return actorInterface.findAll();}
+
+	@PutMapping("/allActors/{id}")
+	public ResponseEntity<Actor> updateActor(@PathVariable(value = "id") Integer actorID, @Validated @RequestBody Actor actorDetails) throws ResourceAccessException {
+		Actor actor = actorInterface.findById(actorID).orElseThrow(() -> new ResourceAccessException("Actor not found with ID: " + actorID));
+		actor.setActorID(actor.getActorID());
+		actor.setActorFirstName(actorDetails.getActorFirstName());
+		actor.setActorLastName(actorDetails.getActorLastName());
+
+		final Actor updatedActor = actorInterface.save(actor);
+		return ResponseEntity.ok(updatedActor);
+	}
+
+	@DeleteMapping("/allActors/{id}")
+	public Map<String, Boolean> deleteActor(@PathVariable(value = "id") Integer actorID) throws ResourceAccessException {
+		Actor actor = actorInterface.findById(actorID).orElseThrow(() -> new ResourceAccessException("Actor not found with ID: " + actorID));
+
+		actorInterface.delete(actor);
+		Map<String, Boolean> response = new HashMap<>();
+		response.put("deleted", Boolean.TRUE);
+		return response;
+	}
+
+	@PostMapping("/allActors")
+	public Actor createActor(@Validated @RequestBody Actor actor) {
+		return actorInterface.save(actor);
+	}
 
 	@GetMapping("/allFilms")
 	public @ResponseBody
