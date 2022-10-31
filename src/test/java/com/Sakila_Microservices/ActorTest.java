@@ -20,4 +20,11 @@ public class ActorTest {
         actor.setActorLastName("Testee");
         Assertions.assertEquals("Testee", actor.getActorLastName(), "ACTOR LAST NAME HAS NOT BEEN CHANGED");
     }
+
+    @Test
+    public void testDefaultConstructor(){
+        new Actor();
+    }
+
+
 }
