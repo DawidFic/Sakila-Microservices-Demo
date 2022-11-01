@@ -45,6 +45,11 @@ public class SakilaMicroservicesDemoApplication {
 	public @ResponseBody
 	Iterable<Actor> getAllActors() {return actorInterface.findAll();}
 
+	@GetMapping("/allActors/{id}")
+	public Actor getSingleActor(@PathVariable(value = "id") int actorID) {
+		return actorInterface.findById(actorID).orElseThrow(() -> new ResourceAccessException("Actor not found with ID "+actorID));
+	}
+
 	@PutMapping("/allActors/{id}")
 	public ResponseEntity<Actor> updateActor(@PathVariable(value = "id") Integer actorID, @Validated @RequestBody Actor actorDetails) throws ResourceAccessException {
 		Actor actor = actorInterface.findById(actorID).orElseThrow(() -> new ResourceAccessException("Actor not found with ID: " + actorID));
