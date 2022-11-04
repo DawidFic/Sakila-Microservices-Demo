@@ -1,6 +1,7 @@
 package com.Sakila_Microservices;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name="Film")
@@ -29,6 +30,14 @@ public class Film {
 
     @Column(name="rating")
     String filmRating;
+
+    @ManyToMany
+    @JoinTable(
+            name = "film_category",
+            joinColumns = @JoinColumn(name = "film_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    Set<Film> actorFilm;
 
     //Constructors//
     public Film(String filmTitle, String filmDescription, String filmReleaseYear, char filmLanguageID, int filmLength, String filmRating) {

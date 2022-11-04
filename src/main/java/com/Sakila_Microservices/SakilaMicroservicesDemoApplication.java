@@ -8,8 +8,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.ResourceAccessException;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @SpringBootApplication
 @RestController
@@ -21,19 +20,13 @@ public class SakilaMicroservicesDemoApplication {
 	private ActorInterface actorInterface;
 	@Autowired
 	private FilmInterface filmInterface;
-	@Autowired
-	private CityInterface cityInterface;
-	@Autowired
-	private CountryInterface countryInterface;
-	@Autowired
-	private LanguageInterface languageInterface;
 
-	public SakilaMicroservicesDemoApplication(ActorInterface actorInterface, FilmInterface filmInterface, CityInterface cityInterface, CountryInterface countryInterface, LanguageInterface languageInterface) {
+	@Autowired
+	private CategoryInterface categoryInterface;
+
+	public SakilaMicroservicesDemoApplication(ActorInterface actorInterface, FilmInterface filmInterface) {
 		this.actorInterface = actorInterface;
 		this.filmInterface = filmInterface;
-		this.cityInterface = cityInterface;
-		this.countryInterface = countryInterface;
-		this.languageInterface = languageInterface;
 	}
 
 	public static void main(String[] args) {
@@ -41,16 +34,23 @@ public class SakilaMicroservicesDemoApplication {
 
 	}
 
-	@GetMapping("/allActors")
+	@GetMapping("/Actors")
 	public @ResponseBody
-	Iterable<Actor> getAllActors() {return actorInterface.findAll();}
-
-	@GetMapping("/allActors/{id}")
-	public Actor getSingleActor(@PathVariable(value = "id") int actorID) {
-		return actorInterface.findById(actorID).orElseThrow(() -> new ResourceAccessException("Actor not found with ID "+actorID));
+	Iterable<Actor> getAllActors() {
+		return actorInterface.findAll();
 	}
 
-	@PutMapping("/allActors/{id}")
+	@GetMapping("/Actors/{fname}/{lname}")
+	public List<Actor> getActorByName(@PathVariable(value = "fname") String fname, @PathVariable(value = "lname") String lname) {
+		return actorInterface.findByNames(fname, lname);
+	}
+
+	@GetMapping("/Actors/{id}")
+	public Actor getSingleActor(@PathVariable(value = "id") int actorID) {
+		return actorInterface.findById(actorID).orElseThrow(() -> new ResourceAccessException("Actor not found with ID " + actorID));
+	}
+
+	@PutMapping("/Actors/{id}")
 	public ResponseEntity<Actor> updateActor(@PathVariable(value = "id") Integer actorID, @Validated @RequestBody Actor actorDetails) throws ResourceAccessException {
 		Actor actor = actorInterface.findById(actorID).orElseThrow(() -> new ResourceAccessException("Actor not found with ID: " + actorID));
 		actor.setActorID(actor.getActorID());
@@ -61,7 +61,7 @@ public class SakilaMicroservicesDemoApplication {
 		return ResponseEntity.ok(updatedActor);
 	}
 
-	@DeleteMapping("/allActors/{id}")
+	@DeleteMapping("/Actors/{id}")
 	public Map<String, Boolean> deleteActor(@PathVariable(value = "id") Integer actorID) throws ResourceAccessException {
 		Actor actor = actorInterface.findById(actorID).orElseThrow(() -> new ResourceAccessException("Actor not found with ID: " + actorID));
 
@@ -71,25 +71,28 @@ public class SakilaMicroservicesDemoApplication {
 		return response;
 	}
 
-	@PostMapping("/allActors")
+	@PostMapping("/Actors")
 	public Actor createActor(@Validated @RequestBody Actor actor) {
 		return actorInterface.save(actor);
 	}
 
 	@GetMapping("/allFilms")
 	public @ResponseBody
-	Iterable<Film> getAllFilms() {return filmInterface.findAll();}
+	Iterable<Film> getAllFilms() {
+		return filmInterface.findAll();
+	}
 
-	@GetMapping("/allCity")
-	public @ResponseBody
-	Iterable<City> getAllCity() {return cityInterface.findAll();}
+	@GetMapping("/allFilms/{title}")
+	public @ResponseBody Optional<Film> getFilmByName(@PathVariable(value = "title") String filmTitle) {
+		return filmInterface.findByTitle(filmTitle);
+	}
 
-	@GetMapping("/allCountry")
-	public @ResponseBody
-	Iterable<Country> getAllCountry() {return countryInterface.findAll();}
+	@GetMapping("/allFilms/{firstname}")
+	public @ResponseBody List<Film> getFilmsByActor(@PathVariable(value = "firstname") String firstname) {
+		return filmInterface.findFilmsByActor(firstname);
+	}
 
-	@GetMapping("/allLanguage")
-	public @ResponseBody
-	Iterable<Language> getAllLanguage() {return languageInterface.findAll();}
-
+	@GetMapping("/CategoryByFilmID/{id}")
+	@ResponseBody
+	public Optional<Category> getCategoryByFilmID(@PathVariable Integer id){return categoryInterface.findById(id);}
 }
