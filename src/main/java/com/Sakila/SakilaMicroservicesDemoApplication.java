@@ -22,17 +22,9 @@ public class SakilaMicroservicesDemoApplication {
 	@Autowired
 	private FilmInterface filmInterface;
 
-	@Autowired
-	private FilmActorInterface filmActorInterface;
-
-	@Autowired
-	private CategoryInterface categoryInterface;
-
-	public SakilaMicroservicesDemoApplication(ActorInterface actorInterface, FilmInterface filmInterface, CategoryInterface categoryInterface, FilmActorInterface filmActorInterface) {
+	public SakilaMicroservicesDemoApplication(ActorInterface actorInterface, FilmInterface filmInterface) {
 		this.actorInterface = actorInterface;
 		this.filmInterface = filmInterface;
-		this.categoryInterface = categoryInterface;
-		this.filmActorInterface = filmActorInterface;
 	}
 
 	public static void main(String[] args) {
@@ -107,11 +99,5 @@ public class SakilaMicroservicesDemoApplication {
 	@GetMapping("/filmByActor/{firstname}")
 	public @ResponseBody Set<Film> getFilmsByActor(@PathVariable(value = "firstname") String firstname) {
 		return filmInterface.findFilmsByActor(firstname);
-	}
-
-	@GetMapping("/CategoryByFilmID/{id}")
-	@ResponseBody
-	public Optional<Category> getCategoryByFilmID(@PathVariable Integer id) {
-		return categoryInterface.findById(id);
 	}
 }
