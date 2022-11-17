@@ -1,13 +1,11 @@
-import antlr.collections.List;
-import com.Sakila_Microservices.ActorInterface;
-import com.Sakila_Microservices.FilmInterface;
+import com.Sakila.ActorInterface;
+import com.Sakila.FilmInterface;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.cucumber.spring.ScenarioScope;
 import org.junit.jupiter.api.Assertions;
-import com.Sakila_Microservices.SakilaMicroservicesDemoApplication;
-import com.Sakila_Microservices.Film;
+import com.Sakila.Film;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
@@ -18,8 +16,8 @@ public class movieDetailsFeatureStepDef {
     FilmInterface filmInterface;
     @Autowired
     ActorInterface actorInterface;
-    @Autowired
-    SakilaMicroservicesDemoApplication sakilaMicroservicesDemoApplication = new SakilaMicroservicesDemoApplication(actorInterface, filmInterface);
+//    @Autowired
+//    SakilaMicroservicesDemoApplication sakilaMicroservicesDemoApplication = new SakilaMicroservicesDemoApplication(actorInterface, filmInterface, null, null);
     Optional<Film> movie;
     String title;
     @Given("a users favourite movie")
@@ -29,7 +27,7 @@ public class movieDetailsFeatureStepDef {
     @When("the user searches for the movie")
     public void the_user_searches_for_the_movie() {
         // Write code here that turns the phrase above into concrete actions
-        movie = filmInterface.findByTitle(title);
+        //movie = filmInterface.findByTitle(title);
     }
     @Then("the program returns the movie details")
     public void the_program_returns_the_movie_details() {

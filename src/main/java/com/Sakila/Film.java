@@ -1,4 +1,4 @@
-package com.Sakila_Microservices;
+package com.Sakila;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -9,26 +9,26 @@ import java.util.Set;
 public class Film {
     //Attributes//
     @Id
-    @Column(name="film_id")
+    @Column(name = "film_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int filmID;
 
-    @Column(name="title")
+    @Column(name = "title")
     String filmTitle;
 
-    @Column(name="description")
+    @Column(name = "description")
     String filmDescription;
 
-    @Column(name="release_year")
+    @Column(name = "release_year")
     String filmReleaseYear;
 
-    @Column(name="language_id")
+    @Column(name = "language_id")
     char filmLanguageID;
 
-    @Column(name="length")
+    @Column(name = "length")
     int filmLength;
 
-    @Column(name="rating")
+    @Column(name = "rating")
     String filmRating;
 
     @ManyToMany
@@ -37,7 +37,17 @@ public class Film {
             joinColumns = @JoinColumn(name = "film_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
-    Set<Film> actorFilm;
+    Set<Category> category;
+
+    @ManyToMany
+    @JoinTable(
+            name = "film_actor",
+            joinColumns = @JoinColumn(name = "film_id"),
+            inverseJoinColumns = @JoinColumn(name = "actor_id")
+    )
+    Set<Actor> filmActor;
+
+
 
     //Constructors//
     public Film(String filmTitle, String filmDescription, String filmReleaseYear, char filmLanguageID, int filmLength, String filmRating) {
@@ -49,7 +59,8 @@ public class Film {
         this.filmRating = filmRating;
     }
 
-    public Film(){}
+    public Film() {
+    }
 
     //Methods//
     public int getFilmID() {

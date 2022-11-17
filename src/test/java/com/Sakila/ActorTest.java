@@ -1,4 +1,4 @@
-package com.Sakila_Microservices;
+package com.Sakila;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

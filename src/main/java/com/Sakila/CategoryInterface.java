@@ -1,4 +1,4 @@
-package com.Sakila_Microservices;
+package com.Sakila;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

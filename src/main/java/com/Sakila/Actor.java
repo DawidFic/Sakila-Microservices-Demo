@@ -1,4 +1,4 @@
-package com.Sakila_Microservices;
+package com.Sakila;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -8,25 +8,28 @@ import java.util.Set;
 
 public class Actor {
     //Attributes//
+
     @Id
-    @Column(name="actor_id")
+    @Column(name = "actor_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int actorID;
 
-    @Column(name="first_name")
+    @Column(name = "first_name")
     String actorFirstName;
 
-    @Column(name="last_name")
+    @Column(name = "last_name")
     String actorLastName;
 
+    @ManyToMany(mappedBy = "filmActor")
+    Set<Film> actorFilm;
+
     //Constructors//
-    public Actor (String firstName, String lastName) {
+    public Actor(String firstName, String lastName) {
         this.actorFirstName = firstName;
         this.actorLastName = lastName;
     }
 
-    public Actor () {
-
+    public Actor() {
     }
 
     //Methods//

@@ -1,8 +1,9 @@
-package com.Sakila_Microservices;
+package com.Sakila;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +13,7 @@ import java.util.*;
 
 @SpringBootApplication
 @RestController
-@RequestMapping("/home")
+@RequestMapping("/api")
 @CrossOrigin
 public class SakilaMicroservicesDemoApplication {
 
@@ -22,11 +23,16 @@ public class SakilaMicroservicesDemoApplication {
 	private FilmInterface filmInterface;
 
 	@Autowired
+	private FilmActorInterface filmActorInterface;
+
+	@Autowired
 	private CategoryInterface categoryInterface;
 
-	public SakilaMicroservicesDemoApplication(ActorInterface actorInterface, FilmInterface filmInterface) {
+	public SakilaMicroservicesDemoApplication(ActorInterface actorInterface, FilmInterface filmInterface, CategoryInterface categoryInterface, FilmActorInterface filmActorInterface) {
 		this.actorInterface = actorInterface;
 		this.filmInterface = filmInterface;
+		this.categoryInterface = categoryInterface;
+		this.filmActorInterface = filmActorInterface;
 	}
 
 	public static void main(String[] args) {
@@ -34,23 +40,23 @@ public class SakilaMicroservicesDemoApplication {
 
 	}
 
-	@GetMapping("/Actors")
+	@GetMapping("/allActors")
 	public @ResponseBody
 	Iterable<Actor> getAllActors() {
 		return actorInterface.findAll();
 	}
 
-	@GetMapping("/Actors/{fname}/{lname}")
+	@GetMapping("/actorByName/{fname}/{lname}") //not working
 	public List<Actor> getActorByName(@PathVariable(value = "fname") String fname, @PathVariable(value = "lname") String lname) {
 		return actorInterface.findByNames(fname, lname);
 	}
 
-	@GetMapping("/Actors/{id}")
+	@GetMapping("/actorById/{id}")
 	public Actor getSingleActor(@PathVariable(value = "id") int actorID) {
 		return actorInterface.findById(actorID).orElseThrow(() -> new ResourceAccessException("Actor not found with ID " + actorID));
 	}
 
-	@PutMapping("/Actors/{id}")
+	@PutMapping("/updateActor/{id}") //working
 	public ResponseEntity<Actor> updateActor(@PathVariable(value = "id") Integer actorID, @Validated @RequestBody Actor actorDetails) throws ResourceAccessException {
 		Actor actor = actorInterface.findById(actorID).orElseThrow(() -> new ResourceAccessException("Actor not found with ID: " + actorID));
 		actor.setActorID(actor.getActorID());
@@ -61,7 +67,7 @@ public class SakilaMicroservicesDemoApplication {
 		return ResponseEntity.ok(updatedActor);
 	}
 
-	@DeleteMapping("/Actors/{id}")
+	@DeleteMapping("/delActor/{id}") //working
 	public Map<String, Boolean> deleteActor(@PathVariable(value = "id") Integer actorID) throws ResourceAccessException {
 		Actor actor = actorInterface.findById(actorID).orElseThrow(() -> new ResourceAccessException("Actor not found with ID: " + actorID));
 
@@ -71,9 +77,20 @@ public class SakilaMicroservicesDemoApplication {
 		return response;
 	}
 
-	@PostMapping("/Actors")
+	@PostMapping("/createActor")
 	public Actor createActor(@Validated @RequestBody Actor actor) {
 		return actorInterface.save(actor);
+	}
+
+	@PostMapping("/newActor")
+	public ResponseEntity<Actor> saveActor(@RequestBody Actor actorDetails) {
+		try {
+			return new ResponseEntity<>(actorInterface.save(actorDetails), HttpStatus.CREATED);
+		}
+		catch (Exception e)
+		{
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	@GetMapping("/allFilms")
@@ -83,16 +100,18 @@ public class SakilaMicroservicesDemoApplication {
 	}
 
 	@GetMapping("/allFilms/{title}")
-	public @ResponseBody Optional<Film> getFilmByName(@PathVariable(value = "title") String filmTitle) {
+	public @ResponseBody List<Film> getFilmByName(@PathVariable(value = "title") String filmTitle) {
 		return filmInterface.findByTitle(filmTitle);
 	}
 
-	@GetMapping("/allFilms/{firstname}")
-	public @ResponseBody List<Film> getFilmsByActor(@PathVariable(value = "firstname") String firstname) {
+	@GetMapping("/filmByActor/{firstname}")
+	public @ResponseBody Set<Film> getFilmsByActor(@PathVariable(value = "firstname") String firstname) {
 		return filmInterface.findFilmsByActor(firstname);
 	}
 
 	@GetMapping("/CategoryByFilmID/{id}")
 	@ResponseBody
-	public Optional<Category> getCategoryByFilmID(@PathVariable Integer id){return categoryInterface.findById(id);}
+	public Optional<Category> getCategoryByFilmID(@PathVariable Integer id) {
+		return categoryInterface.findById(id);
+	}
 }
