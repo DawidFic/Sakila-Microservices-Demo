@@ -16,8 +16,6 @@ public class movieDetailsFeatureStepDef {
     FilmInterface filmInterface;
     @Autowired
     ActorInterface actorInterface;
-//    @Autowired
-//    SakilaMicroservicesDemoApplication sakilaMicroservicesDemoApplication = new SakilaMicroservicesDemoApplication(actorInterface, filmInterface, null, null);
     Optional<Film> movie;
     String title;
     @Given("a users favourite movie")
@@ -26,12 +24,12 @@ public class movieDetailsFeatureStepDef {
     }
     @When("the user searches for the movie")
     public void the_user_searches_for_the_movie() {
-        // Write code here that turns the phrase above into concrete actions
-        //movie = filmInterface.findByTitle(title);
+        //Write code here that turns the phrase above into concrete actions
+        movie = filmInterface.findByTitleTest(title);
     }
     @Then("the program returns the movie details")
     public void the_program_returns_the_movie_details() {
-        // Write code here that turns the phrase above into concrete actions
+//      Write code here that turns the phrase above into concrete actions
         Assertions.assertEquals(2, movie.get().getFilmID(), "WRONG FILM ID FOUND");
         Assertions.assertEquals("ACE GOLDFINGER", movie.get().getFilmTitle(), "WRONG FILM TITLE FOUND");
         Assertions.assertEquals("A Astounding Epistle of a Database Administrator And a Explorer who must Find a Car in Ancient China", movie.get().getFilmDescription(), "WRONG FILM DESCRIPTION FOUND");
